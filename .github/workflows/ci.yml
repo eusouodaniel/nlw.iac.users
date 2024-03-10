@@ -23,7 +23,7 @@ jobs:
       uses: aws-actions/configure-aws-credentials@v4
       with:
         aws-region: us-east-2
-        role-to-assume: arn:aws:iam::403429280851:role/git-iac-access
+        role-to-assume: ${{ secrets.ROLE_ASSUME }}
 
     - name: Checkout
       uses: actions/checkout@v3
@@ -41,7 +41,23 @@ jobs:
 
     - name: Terraform Plan
       run: terraform plan -input=false
+      env:
+        TF_VAR_PREFIX: ${{ vars.TF_VAR_PREFIX }}
+        TF_VAR_VPC_CIDR_BLOCK: ${{ secrets.TF_VAR_VPC_CIDR_BLOCK }}
+        TF_VAR_CLUSTER_NAME: ${{ secrets.TF_VAR_CLUSTER_NAME }}
+        TF_VAR_RETENTION_DAYS: ${{ secrets.TF_VAR_RETENTION_DAYS }}
+        TF_VAR_DESIRED_SIZE: ${{ secrets.TF_VAR_DESIRED_SIZE }}
+        TF_VAR_MAX_SIZE: ${{ secrets.TF_VAR_MAX_SIZE }}
+        TF_VAR_MIN_SIZE: ${{ secrets.TF_VAR_MIN_SIZE }}
 
     - name: Terraform Apply
       if: github.ref == 'refs/heads/main' && github.event_name == 'push'
       run: terraform apply -auto-approve -input=false
+      env:
+        TF_VAR_PREFIX: ${{ secrets.TF_VAR_PREFIX }}
+        TF_VAR_VPC_CIDR_BLOCK: ${{ secrets.TF_VAR_VPC_CIDR_BLOCK }}
+        TF_VAR_CLUSTER_NAME: ${{ secrets.TF_VAR_CLUSTER_NAME }}
+        TF_VAR_RETENTION_DAYS: ${{ secrets.TF_VAR_RETENTION_DAYS }}
+        TF_VAR_DESIRED_SIZE: ${{ secrets.TF_VAR_DESIRED_SIZE }}
+        TF_VAR_MAX_SIZE: ${{ secrets.TF_VAR_MAX_SIZE }}
+        TF_VAR_MIN_SIZE: ${{ secrets.TF_VAR_MIN_SIZE }}
