@@ -6,7 +6,7 @@ terraform {
     }
   }
   backend "s3" {
-    bucket  = "tfstate"
+    bucket  = "nlw-tfstate"
     key     = "state/terraform.tfstate"
     region  = "us-east-2"
     encrypt = true
@@ -18,17 +18,32 @@ provider "aws" {
 }
 
 resource "aws_s3_bucket" "terraform_state" {
-  bucket        = "tfstate"
+  bucket        = "nlw-tfstate"
   force_destroy = true
-  versioning {
-    enabled = true
+
+  lifecycle {
+    prevent_destroy = true
   }
 
-  server_side_encryption_configuration {
-    rule {
-      apply_server_side_encryption_by_default {
-        sse_algorithm = "AES256"
-      }
+  tags = {
+    Iac = "True"
+  }
+}
+
+resource "aws_s3_bucket_versioning" "terraform_state" {
+  bucket = "nlw-tfstate"
+  
+  versioning_configuration {
+    status = "Enabled"
+  }
+}
+
+resource "aws_s3_bucket_server_side_encryption_configuration" "terraform_state" {
+  bucket = "nlw-tfstate"
+
+  rule {
+    apply_server_side_encryption_by_default {
+      sse_algorithm = "AES256"
     }
   }
 }
