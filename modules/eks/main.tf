@@ -1,21 +1,21 @@
 resource "aws_security_group" "sg" {
   vpc_id = var.vpc_id
   egress {
-    from_port = 0
-    to_port = 0
-    protocol = "-1"
-    cidr_blocks = ["0.0.0.0/0"]
+    from_port       = 0
+    to_port         = 0
+    protocol        = "-1"
+    cidr_blocks     = ["0.0.0.0/0"]
     prefix_list_ids = []
   }
 
   tags = {
     Name = "${var.prefix}-sg"
-    IAC = "True"
+    IAC  = "True"
   }
 }
 
 resource "aws_iam_role" "cluster" {
-  name = "${var.prefix}-${var.cluster_name}-role"
+  name               = "${var.prefix}-${var.cluster_name}-role"
   assume_role_policy = <<POLICY
 {
   "Version": "2012-10-17",
@@ -33,21 +33,21 @@ POLICY
 }
 
 resource "aws_iam_role_policy_attachment" "cluster-AmazonEKSVPCResourceController" {
-  role = aws_iam_role.cluster.name
+  role       = aws_iam_role.cluster.name
   policy_arn = "arn:aws:iam::aws:policy/AmazonEKSVPCResourceController"
 }
 
 resource "aws_iam_role_policy_attachment" "cluster-AmazonEKSClusterPolicy" {
-  role = aws_iam_role.cluster.name
+  role       = aws_iam_role.cluster.name
   policy_arn = "arn:aws:iam::aws:policy/AmazonEKSClusterPolicy"
 }
 
 resource "aws_eks_cluster" "cluster" {
-  name = "${var.prefix}-${var.cluster_name}"
-  role_arn = aws_iam_role.cluster.arn
-  enabled_cluster_log_types = ["api","audit"]
+  name                      = "${var.prefix}-${var.cluster_name}"
+  role_arn                  = aws_iam_role.cluster.arn
+  enabled_cluster_log_types = ["api", "audit"]
   vpc_config {
-    subnet_ids = var.subnet_ids 
+    subnet_ids         = var.subnet_ids
     security_group_ids = [aws_security_group.sg.id]
   }
   depends_on = [
@@ -61,7 +61,7 @@ resource "aws_eks_cluster" "cluster" {
 }
 
 resource "aws_iam_role" "node" {
-  name = "${var.prefix}-${var.cluster_name}-role-node"
+  name               = "${var.prefix}-${var.cluster_name}-role-node"
   assume_role_policy = <<POLICY
 {
   "Version": "2012-10-17",
@@ -94,17 +94,17 @@ resource "aws_iam_role_policy_attachment" "node-AmazonEC2ContainerRegistryReadOn
 }
 
 resource "aws_eks_node_group" "node-1" {
-  cluster_name = aws_eks_cluster.cluster.name
+  cluster_name    = aws_eks_cluster.cluster.name
   node_group_name = "node-1"
-  node_role_arn = aws_iam_role.node.arn
-  subnet_ids = var.subnet_ids
-  instance_types = ["t3.medium"]
+  node_role_arn   = aws_iam_role.node.arn
+  subnet_ids      = var.subnet_ids
+  instance_types  = ["t3.medium"]
   scaling_config {
     desired_size = var.desired_size
-    min_size = var.min_size
-    max_size = var.max_size
+    min_size     = var.min_size
+    max_size     = var.max_size
   }
-  
+
   depends_on = [
     aws_iam_role_policy_attachment.node-AmazonEKSWorkerNodePolicy,
     aws_iam_role_policy_attachment.node-AmazonEKS_CNI_Policy,
