@@ -42,22 +42,22 @@ jobs:
     - name: Terraform Plan
       run: terraform plan -input=false
       env:
-        PREFIX: ${{ vars.TF_VAR_PREFIX }}
-        VPC_CIDR_BLOCK: ${{ secrets.TF_VAR_VPC_CIDR_BLOCK }}
-        CLUSTER_NAME: ${{ secrets.TF_VAR_CLUSTER_NAME }}
-        RETENTION_DAYS: ${{ secrets.TF_VAR_RETENTION_DAYS }}
-        DESIRED_SIZE: ${{ secrets.TF_VAR_DESIRED_SIZE }}
-        MAX_SIZE: ${{ secrets.TF_VAR_MAX_SIZE }}
-        MIN_SIZE: ${{ secrets.TF_VAR_MIN_SIZE }}
+        prefix: ${{ vars.TF_VAR_PREFIX }}
+        vpc_cidr_block: ${{ secrets.TF_VAR_VPC_CIDR_BLOCK }}
+        cluster_name: ${{ secrets.TF_VAR_CLUSTER_NAME }}
+        retention_days: ${{ secrets.TF_VAR_RETENTION_DAYS }}
+        desired_size: ${{ secrets.TF_VAR_DESIRED_SIZE }}
+        max_size: ${{ secrets.TF_VAR_MAX_SIZE }}
+        min_size: ${{ secrets.TF_VAR_MIN_SIZE }}
 
     - name: Terraform Apply
       if: github.ref == 'refs/heads/main' && github.event_name == 'push'
       run: terraform apply -auto-approve -input=false
       env:
-        PREFIX: ${{ secrets.TF_VAR_PREFIX }}
-        VPC_CIDR_BLOCK: ${{ secrets.TF_VAR_VPC_CIDR_BLOCK }}
-        CLUSTER_NAME: ${{ secrets.TF_VAR_CLUSTER_NAME }}
-        RETENTION_DAYS: ${{ secrets.TF_VAR_RETENTION_DAYS }}
-        DESIRED_SIZE: ${{ secrets.TF_VAR_DESIRED_SIZE }}
-        MAX_SIZE: ${{ secrets.TF_VAR_MAX_SIZE }}
-        MIN_SIZE: ${{ secrets.TF_VAR_MIN_SIZE }}
+        prefix: ${{ vars.TF_VAR_PREFIX }}
+        vpc_cidr_block: ${{ secrets.TF_VAR_VPC_CIDR_BLOCK }}
+        cluster_name: ${{ secrets.TF_VAR_CLUSTER_NAME }}
+        retention_days: ${{ secrets.TF_VAR_RETENTION_DAYS }}
+        desired_size: ${{ secrets.TF_VAR_DESIRED_SIZE }}
+        max_size: ${{ secrets.TF_VAR_MAX_SIZE }}
+        min_size: ${{ secrets.TF_VAR_MIN_SIZE }}
