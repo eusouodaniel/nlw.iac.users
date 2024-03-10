@@ -35,7 +35,7 @@ jobs:
     - name: Run terraform format
       run: terraform fmt -check
 
-    - name: Run erraform plan
+    - name: Run terraform plan
       run: terraform plan -input=false
       env:
         TF_VAR_prefix: ${{ vars.TF_VAR_PREFIX }}
