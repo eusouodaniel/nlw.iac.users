@@ -10,8 +10,8 @@ permissions:
   contents: read
 
 jobs:
-  build:
-    name: 'Configure job'
+  run-terraform:
+    name: 'Run terraform'
     runs-on: ubuntu-latest
 
     steps:
